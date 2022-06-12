@@ -1,6 +1,9 @@
 package at.fh.softwaresystem1.models;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table
@@ -13,6 +16,13 @@ public class LimitValues {
     private Object value;
     @Column
     private DeviceType deviceType;
+
+    public LimitValues(Long id, String name, Object value, DeviceType deviceType) {
+        this.id = id;
+        this.name = name;
+        this.value = value;
+        this.deviceType = deviceType;
+    }
 
     public Long getId() {
         return id;
