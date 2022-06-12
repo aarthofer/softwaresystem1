@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DMS Overview</title>
+    <script>
+        window.setInterval(refreshEnergyData, 5000);
+
+        const evtSource = new EventSource("http://localhost:8080/dso/triggerFlexPower");
+        evtSource.onmessage = function (event) {
+            console.log(event);
+        }
+        evtSource.onerror = function (error) {
+            console.log(error);
+        }
+
+        windState = false;
+
+        function triggerWind() {
+            windState = !windState;
+            fetch('http://localhost:8080/dso/switchWind?enable=' + windState);
+        }
+
+        sunState = false
+
+        function triggerSun() {
+            sunState = !sunState;
+            fetch('http://localhost:8080/dso/switchSun?enable=' + sunState);
+        }
+
+
+        function refreshEnergyData() {
+            fetch('http://localhost:8080/dso/totalEnergy')
+                .then(response => response.json())
+                .then(data => document.getElementById('totalEnergy').textContent = data);
+        }
+    </script>
+</head>
+<body>
+
+<h2>Trigger weather</h2>
+<button onclick="triggerWind()">Trigger Wind</button>
+<button onclick="triggerSun()">Trigger Wind</button>
+
+<h2>Current total energy consumption</h2>
+<h3 id="totalEnergy"></h3>
+
+<h2>Interruptable Devices</h2>
+
+
+</body>
+</html>

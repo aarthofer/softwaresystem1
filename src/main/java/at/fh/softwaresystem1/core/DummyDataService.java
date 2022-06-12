@@ -4,34 +4,32 @@ import at.fh.softwaresystem1.models.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class DummyDataService {
 
-    List<BuildingCharacteristics> buildingCharacteristics = loadBuildingCharacteristics();
+    private List<BuildingCharacteristics> buildingCharacteristics = loadBuildingCharacteristics();
 
+    private List<ManagementUnit> managementUnits;
 
-    List<ManagementUnit> managementUnits;
-
-    List<LimitValues> limitValues;
-
-    List<ResponseCurrentPower> totalEnergyConsumption;
+    private List<LimitValues> limitValues;
 
     public List<BuildingCharacteristics> getBuildingCharacteristics() {
         return buildingCharacteristics;
     }
 
     public List<ManagementUnit> getManagementUnits() {
-        return managementUnits;
+        return buildingCharacteristics.stream()
+                .map(BuildingCharacteristics::getManagementUnits)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public List<LimitValues> getLimitValues() {
-        return limitValues;
-    }
-
-    public List<ResponseCurrentPower> getTotalEnergyConsumption() {
-        return totalEnergyConsumption;
+        return loadDefaultValues();
     }
 
     private List<BuildingCharacteristics> loadBuildingCharacteristics() {
