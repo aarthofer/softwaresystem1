@@ -96,10 +96,10 @@
             consumer.textContent = 'Consumers: ' + pc.name + ' (' + pc.deviceAddress + ')';
 
             let state = document.createElement('div');
-            state.textContent = `Interpretable: ${pc.interuptableEnabled} \t Currently Consuming: ${pc.currentlyConsuming}`;
+            state.textContent = `Interruptable: ${pc.interuptableEnabled} \t Currently Consuming: ${pc.currentlyConsuming}`;
 
             let irEnabled = document.createElement('button');
-            irEnabled.textContent = pc.interuptableEnabled ? 'Set is not interruptible' : 'Set is interruptible';
+            irEnabled.textContent = pc.interuptableEnabled ? 'Set is not interruptable' : 'Set is interruptible';
             irEnabled.onclick = (function (ev) {
                 pc.interuptableEnabled = !pc.interuptableEnabled;
                 fetch('http://localhost:8080/powermanagement/updatePowerConsumer', {
