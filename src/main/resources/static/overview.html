@@ -9,12 +9,12 @@
 
         const evtSource = new EventSource("http://localhost:8080/dso/triggerFlexPower");
         evtSource.onmessage = function (event) {
-            if(event.data === 'ON'){
+            if (event.data === 'ON') {
                 console.log('######## ON');
-                loadState.style.fill='green';
-            }else{
+                loadState.style.fill = 'green';
+            } else {
                 console.log('######## OFF');
-                loadState.style.fill='red';
+                loadState.style.fill = 'red';
             }
             refreshCustomerData();
         }
@@ -36,7 +36,7 @@
         function triggerWind() {
             windState = !windState;
             fetch('http://localhost:8080/dso/switchWind?enable=' + windState);
-            document.getElementById('windButton').innerText = windState ? 'Disable Wind': 'Enable Wind';
+            document.getElementById('windButton').innerText = windState ? 'Disable Wind' : 'Enable Wind';
         }
 
         sunState = false
@@ -44,7 +44,7 @@
         function triggerSun() {
             sunState = !sunState;
             fetch('http://localhost:8080/dso/switchSun?enable=' + sunState);
-            document.getElementById('sunButton').innerText = sunState ? 'Disable Sun': 'Enable Sun';
+            document.getElementById('sunButton').innerText = sunState ? 'Disable Sun' : 'Enable Sun';
         }
 
         function refreshEnergyData() {
@@ -66,14 +66,14 @@
                     for (let i = 0; i < data.length; i++) { // BuildingCharacteristics
                         let bc = data[i];
                         let customerDiv = document.createElement('div');
-                        let customerContract = document.createElement('h4');
+                        let customerContract = document.createElement('h3');
                         customerContract.textContent = 'Customer: ' + bc.contractId;
                         customerDiv.appendChild(customerContract);
 
                         for (let j = 0; j < bc.managementUnits.length; j++) { // ManagementUnits
                             let mu = bc.managementUnits[j];
                             let muDiv = document.createElement('div');
-                            let smartmeter = document.createElement('h5');
+                            let smartmeter = document.createElement('h4');
                             smartmeter.textContent = 'ManagementUnit: ' + mu.networkIdentifier;
                             muDiv.appendChild(smartmeter);
 
@@ -92,7 +92,7 @@
         }
 
         function displayConsumerData(pc, pcDiv) {
-            let consumer = document.createElement('h5');
+            let consumer = document.createElement('h4');
             consumer.textContent = 'Consumers: ' + pc.name + ' (' + pc.deviceAddress + ')';
 
             let state = document.createElement('div');
@@ -133,24 +133,37 @@
         }
 
     </script>
+
+    <style>
+        .row {
+            display: flex;
+        }
+
+        .column {
+            flex: 50%;
+        }
+    </style>
 </head>
 <body>
+<div class="row">
+    <div class="column">
+        <h2>Trigger weather</h2>
+        <button id="windButton" onclick="triggerWind()">Enable Wind</button>
+        <button id="sunButton" onclick="triggerSun()">Enable Sun</button>
+        <button onclick="autoUpdate()">Stop/Start auto update</button>
 
-<h2>Trigger weather</h2>
-<button id="windButton" onclick="triggerWind()">Enable Wind</button>
-<button id="sunButton" onclick="triggerSun()">Enable Sun</button>
-<button onclick="autoUpdate()">Stop/Start auto update</button>
+        <h2>Interruptable Power</h2>
+        <svg height="100" width="100">
+            <circle id="loadState" cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red"/>
+        </svg>
 
-<h2>Interruptable Power</h2>
-<svg height="100" width="100">
-    <circle id="loadState" cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
-</svg>
-
-<h2>Current total energy consumption</h2>
-<h3 id="totalEnergy"></h3>
-
-<h2>Interruptable Devices</h2>
-<div id="customers"></div>
-
+        <h2>Current total energy consumption</h2>
+        <h3 id="totalEnergy"></h3>
+    </div>
+    <div class="column">
+        <h2>Interruptable Devices</h2>
+        <div id="customers"></div>
+    </div>
+</div>
 </body>
 </html>
