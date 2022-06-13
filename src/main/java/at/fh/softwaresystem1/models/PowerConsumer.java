@@ -3,13 +3,13 @@ package at.fh.softwaresystem1.models;
 import java.util.Map;
 
 public class PowerConsumer {
+    DeviceType type;
     private long id;
     private String name;
     private boolean interuptableEnabled;
     private Map<String, Object> attributes;
     private boolean currentlyConsuming;
     private String deviceAddress;
-    DeviceType type;
 
     public PowerConsumer(long id, String name, boolean interuptableEnabled, Map<String, Object> attributes, boolean currentlyConsuming, String deviceAddress, DeviceType type) {
         this.id = id;

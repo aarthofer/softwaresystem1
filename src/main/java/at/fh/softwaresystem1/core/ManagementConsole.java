@@ -1,15 +1,21 @@
 package at.fh.softwaresystem1.core;
 
+import at.fh.softwaresystem1.models.BuildingCharacteristics;
 import at.fh.softwaresystem1.models.ManagementUnit;
 import at.fh.softwaresystem1.models.PowerConsumer;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Component
 public class ManagementConsole {
     @Resource
     DummyDataService dataService;
+
+    public List<BuildingCharacteristics> loadAllData() {
+        return dataService.getBuildingCharacteristics();
+    }
 
     public ManagementUnit loadCurrentData(Long muId) {
         return dataService.getManagementUnits().stream().filter(x -> x.getId() == muId).findFirst().orElse(null);

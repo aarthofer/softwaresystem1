@@ -32,7 +32,6 @@ public class DSOController implements FlexLoadTriggerListener {
     @RequestMapping(value = "totalEnergy", method = RequestMethod.GET)
     Double getTotalEnergy() {
         Double energy = controller.currentTotalEnergy();
-        System.out.println(String.format("#####: Current total energy %f", energy));
         return energy;
     }
 
@@ -70,7 +69,7 @@ public class DSOController implements FlexLoadTriggerListener {
             try {
                 SseEmitter.SseEventBuilder event = SseEmitter.event()
                         .data(state.getValue())
-                        .name("onmessage ");
+                        .name("message");
                 emitter.send(event);
             } catch (Exception ex) {
                 emitter.completeWithError(ex);

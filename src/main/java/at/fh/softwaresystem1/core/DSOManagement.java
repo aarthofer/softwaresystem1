@@ -12,13 +12,10 @@ public class DSOManagement {
 
     @Resource
     DummyDataService dataService;
-
-    private FlexLoadTriggerListener triggerListener;
-
     boolean windAvailable = false;
     boolean sunAvailable = false;
-
     List<BuildingCharacteristics> customers;
+    private FlexLoadTriggerListener triggerListener;
 
     @PostConstruct
     public void loadData() {
@@ -52,6 +49,7 @@ public class DSOManagement {
             totalFlexEnergy += flex;
             totalConstantEnergy += constant;
         }
+        System.out.println(String.format("#####: Current total constant energy %f", totalConstantEnergy));
         checkFlexLoadAvailable(totalConstantEnergy);
         return totalConstantEnergy + totalFlexEnergy;
     }
@@ -59,7 +57,20 @@ public class DSOManagement {
     public void triggerFlexPower(boolean flexPowerAvailable) {
         System.out.println("#####: Flex load is " +
                 (flexPowerAvailable ? "available" : "not available"));
+        sendFlexLoadTriggerToDevices(flexPowerAvailable);
         triggerListener.sendTrigger(new FlexLoadState(flexPowerAvailable ? State.ON : State.OFF));
+    }
+
+    private void sendFlexLoadTriggerToDevices(boolean flexPowerAvailable) {
+        for (ManagementUnit mu :
+                dataService.getManagementUnits()) {
+            for (PowerConsumer pc :
+                    mu.getConsumers()) {
+                if (pc.isInteruptableEnabled()) {
+                    pc.setCurrentlyConsuming(flexPowerAvailable);
+                }
+            }
+        }
     }
 
     public double getRandomNumber(double min, double max) {
@@ -79,7 +90,8 @@ public class DSOManagement {
     }
 
     private void checkFlexLoadAvailable(double currentConstantEnergyConsumption) {
-        if (currentConstantEnergyConsumption < 15.0 && (windAvailable || sunAvailable)) {
+        if ((windAvailable && sunAvailable)
+                || (currentConstantEnergyConsumption < 15.0 && (windAvailable || sunAvailable))) {
             triggerFlexPower(true);
         } else {
             triggerFlexPower(false);
